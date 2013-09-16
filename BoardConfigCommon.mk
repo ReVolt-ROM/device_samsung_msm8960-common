@@ -25,9 +25,15 @@ TARGET_BOARD_PLATFORM_GPU := qcom-adreno200
 TARGET_CPU_SMP := true
 
 # Flags
-COMMON_GLOBAL_CFLAGS += -D__ARM_USE_PLD -D__ARM_CACHE_LINE_SIZE=64 -DNEW_ION_API -DQCOM_BSP_CAMERA_ABI_HACK
+COMMON_GLOBAL_CFLAGS += -D__ARM_USE_PLD -D__ARM_CACHE_LINE_SIZE=64
+
+ifneq ($(VARIENT_REQUIRE_3.0_KERNEL),true)
+COMMON_GLOBAL_CFLAGS += -DNEW_ION_API
+endif
+
 TARGET_GLOBAL_CFLAGS += -mfpu=neon-vfpv4 -mfloat-abi=softfp
 TARGET_GLOBAL_CPPFLAGS += -mfpu=neon-vfpv4 -mfloat-abi=softfp
+TARGET_CPU_VARIANT := krait
 
 # Krait optimizations
 TARGET_USE_KRAIT_BIONIC_OPTIMIZATION := true
@@ -73,17 +79,19 @@ TARGET_USE_CUSTOM_LUN_FILE_PATH := /sys/devices/platform/msm_hsusb/gadget/lun%d/
 
 # Camera
 COMMON_GLOBAL_CFLAGS += -DSAMSUNG_CAMERA_HARDWARE
-BOARD_CAMERA_USE_MM_HEAP := true
 
 # Workaround to avoid issues with legacy liblights on QCOM platforms
 TARGET_PROVIDES_LIBLIGHT := true
 
 # Audio
 BOARD_USES_ALSA_AUDIO := true
-BOARD_HAVE_SAMSUNG_AUDIO := true
 BOARD_USES_FLUENCE_INCALL := true
+BOARD_USES_FLUENCE_FOR_VOIP := true
 BOARD_USES_SEPERATED_AUDIO_INPUT := true
 TARGET_USES_QCOM_COMPRESSED_AUDIO := true
+
+# QCOM enhanced A/V
+TARGET_ENABLE_QC_AV_ENHANCEMENTS := true
 
 # Kernel time optimization
 # temp remove - causing issues with short/long presses
@@ -94,3 +102,6 @@ BOARD_HAVE_NEW_QC_GPS := true
 
 # Use CAF media driver variant for 8960
 TARGET_QCOM_MEDIA_VARIANT := caf
+
+# Use retire fence from MDP driver
+TARGET_DISPLAY_USE_RETIRE_FENCE := true
